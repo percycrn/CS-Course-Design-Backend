@@ -2,38 +2,32 @@ package com.usst.lostandfound.entity;
 
 import javax.persistence.*;
 
+// @JoinColumn(name = "found_phone", referencedColumnName = "phone")
+// @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+// private User user;
+
 @Entity
+@Table(name = "found")
 public class Found {
-    @Id
-    @Column(length = 4)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer foundID;
-    @Column(length = 11, nullable = false)
-    private String foundPhone;
-    @Column(length = 10, nullable = false)
-    private String name;
-    @Column(length = 30, nullable = false)
-    private String location;
-    @Column(nullable = false)
-    private Long time;
-    @Column(length = 50)
-    private String pic;
-    @Column(length = 30, nullable = false)
-    private String outline;
-    @Column(length = 50, nullable = false)
-    private String storage;
-    @Column(length = 11, nullable = false)
-    private String lostPhone;
+    @Id @Column(length = 4) @GeneratedValue(strategy = GenerationType.IDENTITY) private Integer foundId;
+    @Column(length = 11, nullable = false) private String foundPhone;
+    @Column(length = 10, nullable = false) private String name;
+    @Column(length = 30, nullable = false) private String location;
+    @Column(nullable = false) private Long time;
+    @Column(length = 50) private String pic;
+    @Column(length = 30, nullable = false) private String outline;
+    @Column(length = 50, nullable = false) private String storage;
+    @Column(length = 11) private String lostPhone;
 
     public Found() {
     }
 
-    public Integer getFoundID() {
-        return foundID;
+    public Integer getFoundId() {
+        return foundId;
     }
 
-    public void setFoundID(Integer foundID) {
-        this.foundID = foundID;
+    public void setFoundId(Integer foundId) {
+        this.foundId = foundId;
     }
 
     public String getFoundPhone() {
@@ -98,5 +92,20 @@ public class Found {
 
     public void setLostPhone(String lostPhone) {
         this.lostPhone = lostPhone;
+    }
+
+    @Override
+    public String toString() {
+        return "Found{" +
+                "foundId=" + foundId +
+                ", foundPhone='" + foundPhone + '\'' +
+                ", name='" + name + '\'' +
+                ", location='" + location + '\'' +
+                ", time=" + time +
+                ", pic='" + pic + '\'' +
+                ", outline='" + outline + '\'' +
+                ", storage='" + storage + '\'' +
+                ", lostPhone='" + lostPhone + '\'' +
+                '}';
     }
 }
