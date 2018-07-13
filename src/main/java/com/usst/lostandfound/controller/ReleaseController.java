@@ -9,6 +9,7 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,31 +18,25 @@ import java.util.List;
 
 @RestController
 public class ReleaseController {
-    private final ApplicationRepository appRepo;
     private final FoundRepository foundRepo;
     private final LostRepository lostRepo;
-    private final PromptRepository promptRepo;
     private final UserRepository userRepo;
 
-    public ReleaseController(ApplicationRepository appRepo, FoundRepository foundRepo, LostRepository lostRepo,
-                             PromptRepository promptRepo, UserRepository userRepo) {
-        this.appRepo = appRepo;
+    public ReleaseController(FoundRepository foundRepo, LostRepository lostRepo, UserRepository userRepo) {
         this.foundRepo = foundRepo;
         this.lostRepo = lostRepo;
-        this.promptRepo = promptRepo;
         this.userRepo = userRepo;
     }
 
     /**
-     * 发布found信息
+     * 发布Found信息
      *
-     * @param pic   上传的图片文件
      * @param found 发布的found信息
      * @return Response
      */
+    @CrossOrigin
     @PostMapping(value = "/found")
-    public Response createFound(@RequestParam("pic") MultipartFile pic, @RequestBody Found found) {
-        found.setPic(getPicUrl(pic, found.getFoundPhone()));
+    public Response createFound(@RequestBody Found found) {
         foundRepo.save(found);
         return new Response("success to create new found", 200);
     }
@@ -49,14 +44,13 @@ public class ReleaseController {
     /**
      * 发布Lost信息
      *
-     * @param pic  上传的图片文件
      * @param lost 发布的lost信息
      * @return Response
      */
     @PostMapping(value = "/lost")
-    public Response createLost(@RequestParam("pic") MultipartFile pic, @RequestBody Lost lost) {
+    public Response createLost(@RequestBody Lost lost) {
         lost.setFound(0);
-        lost.setPic(getPicUrl(pic, lost.getLostPhone()));
+        lostRepo.save(lost);
         return new Response("success to create new lost", 200);
     }
 
@@ -66,6 +60,7 @@ public class ReleaseController {
      * @param foundId found对象的ID
      * @return Response
      */
+    @Transactional
     @DeleteMapping(value = "/found/{foundId}")
     public Response deleteFound(@PathVariable("foundId") Integer foundId) {
         if (foundRepo.deleteByFoundId(foundId) == 1) {
@@ -81,6 +76,7 @@ public class ReleaseController {
      * @param lostId lost对象的ID
      * @return Response
      */
+    @Transactional
     @DeleteMapping(value = "/lost/{lostId}")
     public Response deleteLost(@PathVariable("lostId") Integer lostId) {
         if (lostRepo.deleteByLostId(lostId) == 1) {
@@ -93,24 +89,18 @@ public class ReleaseController {
     /**
      * 修改found信息
      *
-     * @param pic       上传的图片文件
      * @param foundId   found对象的ID
      * @param foundInfo 包含修改内容的found对象
      * @return Response
      */
     @PutMapping(value = "/found/{foundId}")
-    public Response updateFound(@RequestParam("pic") MultipartFile pic, @PathVariable("foundId") Integer foundId,
-                                @RequestBody Found foundInfo) {
+    public Response updateFound(@PathVariable("foundId") Integer foundId, @RequestBody Found foundInfo) {
         Found found = foundRepo.findByFoundId(foundId);
         found.setName(foundInfo.getName());
         found.setLocation(foundInfo.getLocation());
         found.setTime(foundInfo.getTime());
         found.setOutline(foundInfo.getOutline());
         found.setStorage(foundInfo.getStorage());
-        String url = getPicUrl(pic, found.getFoundPhone());
-        if (url != null) {
-            found.setPic(url);
-        }
         foundRepo.save(found);
         return new Response("success to update found", 200);
     }
@@ -118,23 +108,17 @@ public class ReleaseController {
     /**
      * 修改lost信息
      *
-     * @param pic      上传的图片文件
      * @param lostId   lost对象的ID
      * @param lostInfo 包含修改内容的found对象
      * @return Response
      */
     @PutMapping(value = "/lost/{lostId}")
-    public Response updateLost(@RequestParam("pic") MultipartFile pic, @PathVariable("lostId") Integer lostId,
-                               @RequestBody Lost lostInfo) {
+    public Response updateLost(@PathVariable("lostId") Integer lostId, @RequestBody Lost lostInfo) {
         Lost lost = lostRepo.findByLostId(lostId);
         lost.setName(lostInfo.getName());
         lost.setLocation(lostInfo.getLocation());
         lost.setTime(lostInfo.getTime());
         lost.setOutline(lostInfo.getOutline());
-        String url = getPicUrl(pic, lost.getLostPhone());
-        if (url != null) {
-            lost.setPic(url);
-        }
         lostRepo.save(lost);
         return new Response("success to update lost", 200);
     }
@@ -187,6 +171,24 @@ public class ReleaseController {
         return lostRepo.findByLostPhoneNot(user.getPhone());
     }
 
+    @PostMapping(value = "/upload")
+    public Response uploadPic(@RequestParam("pic") MultipartFile pic, @RequestParam("id") Integer id,
+                              @RequestParam("type") Integer type) {
+        switch (type) {
+            case 0:
+                Lost lost = lostRepo.findByLostId(id);
+                lost.setPic(getPicUrl(pic, lost.getLostPhone()));
+                lostRepo.save(lost);
+                break;
+            case 1:
+                Found found = foundRepo.findByFoundId(id);
+                found.setPic(getPicUrl(pic, found.getFoundPhone()));
+                foundRepo.save(found);
+                break;
+        }
+        return new Response("success to upload picture", 200);
+    }
+
     private static String getPicUrl(MultipartFile pic, String phone) {
         String url = null;
         if (!pic.isEmpty()) {
@@ -197,8 +199,8 @@ public class ReleaseController {
                 File upload = new File(path.getAbsolutePath(), "src/img/");
                 if (!upload.exists()) upload.mkdirs();
                 System.out.println("upload url:" + upload.getAbsolutePath());
-
-                File uploadFile = new File(upload.getAbsolutePath() + pic.getOriginalFilename());
+                File uploadFile = new File(upload.getAbsolutePath(), pic.getOriginalFilename());
+                System.out.println(uploadFile);
                 BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(uploadFile));
                 System.out.println(pic.getOriginalFilename());
                 String args[] = pic.getOriginalFilename().split("\\.");

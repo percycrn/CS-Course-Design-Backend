@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface PromptRepository extends JpaRepository<Prompt, Integer> {
     List<Prompt> findByLostPhone(String lostPhone);
+
+    int deleteByPromptId(Integer promptId);
 }

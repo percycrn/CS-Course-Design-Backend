@@ -10,7 +10,7 @@ public class Lost {
     @Column(length = 10, nullable = false) private String name;
     @Column(length = 30, nullable = false) private String location;
     @Column(nullable = false) private Long time;
-    @Column(length = 50) private String pic;
+    @Column(length = 60) private String pic;
     @Column(length = 30, nullable = false) private String outline;
     @Column(length = 1) private Integer found; // 0未找到 1找到
 

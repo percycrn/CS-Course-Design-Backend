@@ -3,6 +3,9 @@ package com.usst.lostandfound.response;
 public class Audit {
     private Integer state;
 
+    public Audit() {
+    }
+
     public Audit(Integer state) {
         this.state = state;
     }

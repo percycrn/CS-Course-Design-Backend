@@ -6,6 +6,7 @@ import com.usst.lostandfound.repository.*;
 import com.usst.lostandfound.response.Response;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @RestController
@@ -41,6 +42,22 @@ public class ClaimController {
     @GetMapping(value = "/prompts/{userId}")
     public List<Prompt> getPrompts(@PathVariable("userId") Integer userId) {
         return promptRepo.findByLostPhone(userRepo.findByUserId(userId).getPhone());
+    }
+
+    /**
+     * 删除一个认领信息
+     *
+     * @param promptId 某个认领对象的ID
+     * @return Response
+     */
+    @Transactional
+    @DeleteMapping(value = "/prompts/{promptId}")
+    public Response deletePrompt(@PathVariable("promptId") Integer promptId) {
+        if (promptRepo.deleteByPromptId(promptId) == 1) {
+            return new Response("success to delete prompt", 200);
+        } else {
+            return new Response("fail to delete prompt", 400);
+        }
     }
 
     /**

@@ -21,7 +21,7 @@ class Upload {
         String accessKey = "rw7a4ekcvSuEc70rLEQG9Ik_5AHG6kDAj4GDgeRh";
         String secretKey = "qfuGzLv85iuMsiOxuiZ9avVPQLWH7Lr8mlG7fOOq";
         String bucket = "lostandfound";
-        String baseUrl = "http://p8pjrhsrh.bkt.clouddn.com/";
+        String baseUrl = "http://pbt0hsxrl.bkt.clouddn.com/";
         Calendar now = Calendar.getInstance();
         String key = phone + "-" + now.get(Calendar.YEAR) + "-"
                 + now.get(Calendar.MONTH) + "-"
