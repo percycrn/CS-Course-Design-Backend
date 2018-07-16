@@ -9,7 +9,7 @@ public class Application {
     @Column(length = 4) private Integer foundId;
     @Column(nullable = false) private Long time;
     @Column(length = 11) private String phone;
-    @Column(length = 1) private Integer State; // 0 PENDING 1 PASS -1 DENY
+    @Column(length = 1) private Integer state; // 0 PENDING 1 PASS -1 DENY
 
     public Application() {
     }
@@ -47,10 +47,21 @@ public class Application {
     }
 
     public Integer getState() {
-        return State;
+        return state;
     }
 
     public void setState(Integer state) {
-        State = state;
+        this.state = state;
+    }
+
+    @Override
+    public String toString() {
+        return "Application{" +
+                "appId=" + appId +
+                ", foundId=" + foundId +
+                ", time=" + time +
+                ", phone='" + phone + '\'' +
+                ", state=" + state +
+                '}';
     }
 }

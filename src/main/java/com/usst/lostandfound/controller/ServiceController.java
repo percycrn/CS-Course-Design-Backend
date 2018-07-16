@@ -89,4 +89,15 @@ public class ServiceController {
         return user;
     }
 
+    /**
+     * 用户获得个人信息
+     *
+     * @param phone 用户手机号
+     * @return 用户对象
+     */
+    @GetMapping(value = "/user")
+    public User getUserInfoByPhone(@RequestParam("phone") String phone) {
+        return userRepo.findByPhone(phone);
+    }
+
 }

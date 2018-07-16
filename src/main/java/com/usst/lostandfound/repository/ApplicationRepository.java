@@ -13,4 +13,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
     List<Application> findByPhone(String phone);
 
     Application findByFoundIdAndPhone(Integer foundId, String phone);
+
+    List<Application> findByState(Integer state);
 }

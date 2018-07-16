@@ -65,4 +65,20 @@ public class ApplicationController {
         User user = userRepo.findByUserId(userId);
         return appRepo.findByPhone(user.getPhone());
     }
+
+    /**
+     * 获得所有用户未审核的申请列表
+     *
+     * @return 申请列表
+     */
+    @GetMapping(value = "/apps")
+    public List<Application> getAppsList() {
+        System.out.println(1);
+        List<Application> lists = appRepo.findByState(0);
+        for (Application app : lists) {
+            System.out.println(app);
+        }
+        System.out.println(2);
+        return appRepo.findByState(0);
+    }
 }
