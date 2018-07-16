@@ -120,7 +120,7 @@ public class ReleaseController {
         lost.setTime(lostInfo.getTime());
         lost.setOutline(lostInfo.getOutline());
         lostRepo.save(lost);
-        return new Response("success to update lost", 200);
+        return new Response("success to update lost item", 200);
     }
 
     /**
@@ -156,7 +156,7 @@ public class ReleaseController {
     @GetMapping(value = "/users/{userId}/found/other")
     public List<Found> getOtherFound(@PathVariable("userId") Integer userId) {
         User user = userRepo.findByUserId(userId);
-        return foundRepo.findByFoundPhoneNot(user.getPhone());
+        return foundRepo.findByFoundPhoneNotAndLostPhoneNull(user.getPhone());
     }
 
     /**
@@ -171,6 +171,29 @@ public class ReleaseController {
         return lostRepo.findByLostPhoneNot(user.getPhone());
     }
 
+    /**
+     * 查看单个found信息
+     *
+     * @param foundId 准备查找的found对象的ID
+     * @return found对象
+     */
+    @GetMapping(value = "/found/{foundId}")
+    public Found getSingleFound(@PathVariable("foundId") Integer foundId) {
+        return foundRepo.findByFoundId(foundId);
+    }
+
+    /**
+     * 查看单个lost信息
+     *
+     * @param lostId 准备查找的found对象的ID
+     * @return lost对象
+     */
+    @GetMapping(value = "/lost/{lostId}")
+    public Found getSingleLost(@PathVariable("lostId") Integer lostId) {
+        return foundRepo.findByFoundId(lostId);
+    }
+
+    @CrossOrigin
     @PostMapping(value = "/upload")
     public Response uploadPic(@RequestParam("pic") MultipartFile pic, @RequestParam("id") Integer id,
                               @RequestParam("type") Integer type) {
@@ -188,6 +211,25 @@ public class ReleaseController {
         }
         return new Response("success to upload picture", 200);
     }
+
+    /*@CrossOrigin
+    @PostMapping(value = "/upload/{id}/{type}")
+    public Response uploadPic(@RequestParam("pic") MultipartFile pic, @PathVariable("id") Integer id,
+                              @PathVariable("type") Integer type) {
+        switch (type) {
+            case 0:
+                Lost lost = lostRepo.findByLostId(id);
+                lost.setPic(getPicUrl(pic, lost.getLostPhone()));
+                lostRepo.save(lost);
+                break;
+            case 1:
+                Found found = foundRepo.findByFoundId(id);
+                found.setPic(getPicUrl(pic, found.getFoundPhone()));
+                foundRepo.save(found);
+                break;
+        }
+        return new Response("success to upload picture", 200);
+    }*/
 
     private static String getPicUrl(MultipartFile pic, String phone) {
         String url = null;

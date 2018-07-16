@@ -12,5 +12,5 @@ public interface FoundRepository extends JpaRepository<Found, Integer> {
 
     List<Found> findByFoundPhone(String foundPhone);
 
-    List<Found> findByFoundPhoneNot(String foundPhone);
+    List<Found> findByFoundPhoneNotAndLostPhoneNull(String foundPhone);
 }

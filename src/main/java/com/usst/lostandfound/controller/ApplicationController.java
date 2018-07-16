@@ -27,6 +27,12 @@ public class ApplicationController {
      */
     @PostMapping(value = "/apps")
     public Response apply(@RequestBody Application app) {
+        if (app.getFoundId() == null || app.getPhone() == null) {
+            return new Response("lack necessary parameter", 400);
+        }
+        if (appRepo.findByFoundIdAndPhone(app.getFoundId(), app.getPhone()) != null) {
+            return new Response("cannot apply twice!", 400);
+        }
         app.setState(0);
         appRepo.save(app);
         return new Response("success to create new application", 200);

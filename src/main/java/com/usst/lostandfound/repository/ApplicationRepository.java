@@ -11,4 +11,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
     int deleteByAppId(Integer appId);
 
     List<Application> findByPhone(String phone);
+
+    Application findByFoundIdAndPhone(Integer foundId, String phone);
 }

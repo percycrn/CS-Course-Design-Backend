@@ -39,7 +39,7 @@ public class ClaimController {
      * @param userId 用户ID
      * @return 提示信息数组
      */
-    @GetMapping(value = "/prompts/{userId}")
+    @GetMapping(value = "/users/{userId}/prompts")
     public List<Prompt> getPrompts(@PathVariable("userId") Integer userId) {
         return promptRepo.findByLostPhone(userRepo.findByUserId(userId).getPhone());
     }
@@ -51,7 +51,7 @@ public class ClaimController {
      * @return Response
      */
     @Transactional
-    @DeleteMapping(value = "/prompts/{promptId}")
+    @DeleteMapping(value = "/prompt/{promptId}")
     public Response deletePrompt(@PathVariable("promptId") Integer promptId) {
         if (promptRepo.deleteByPromptId(promptId) == 1) {
             return new Response("success to delete prompt", 200);
@@ -60,14 +60,4 @@ public class ClaimController {
         }
     }
 
-    /**
-     * 查看他人提示的单个found信息
-     *
-     * @param foundId 准备查找的found对象的ID
-     * @return found对象
-     */
-    @GetMapping(value = "/founds/{foundId}/prompts")
-    public Found getPromptFound(@PathVariable("foundId") Integer foundId) {
-        return foundRepo.findByFoundId(foundId);
-    }
 }

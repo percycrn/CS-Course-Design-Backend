@@ -11,11 +11,11 @@ import javax.persistence.*;
 public class Found {
     @Id @Column(length = 4) @GeneratedValue(strategy = GenerationType.IDENTITY) private Integer foundId;
     @Column(length = 11, nullable = false) private String foundPhone;
-    @Column(length = 10, nullable = false) private String name;
+    @Column(length = 30, nullable = false) private String name;
     @Column(length = 30, nullable = false) private String location;
     @Column(nullable = false) private Long time;
     @Column(length = 60) private String pic;
-    @Column(length = 30, nullable = false) private String outline;
+    @Column(length = 100, nullable = false) private String outline;
     @Column(length = 50, nullable = false) private String storage;
     @Column(length = 11) private String lostPhone;
 

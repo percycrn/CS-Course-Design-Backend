@@ -3,12 +3,12 @@ package com.usst.lostandfound.response;
 public class SignIn {
     private String message;
     private Integer status;
-    private Integer userId;
+    private Users users;
 
-    public SignIn(String message, Integer status, Integer userId) {
+    public SignIn(String message, Integer status, Users users) {
         this.message = message;
         this.status = status;
-        this.userId = userId;
+        this.users = users;
     }
 
     public String getMessage() {
@@ -27,11 +27,11 @@ public class SignIn {
         this.status = status;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public Users getUsers() {
+        return users;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setUsers(Users users) {
+        this.users = users;
     }
 }

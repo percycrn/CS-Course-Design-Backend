@@ -4,6 +4,7 @@ import com.usst.lostandfound.entity.User;
 import com.usst.lostandfound.repository.*;
 import com.usst.lostandfound.response.Response;
 import com.usst.lostandfound.response.SignIn;
+import com.usst.lostandfound.response.Users;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,8 +23,11 @@ public class ServiceController {
      */
     @PostMapping(value = "/signup")
     public Response signUp(@RequestBody User user) {
+        if (user.getPassword() == null || user.getPhone() == null || user.getId() == null || user.getName() == null) {
+            return new Response("missing some information", 400);
+        }
         if (userRepo.findByPhone(user.getPhone()) != null) {
-            return new Response("The phone is already used to sign up", 400);
+            return new Response("The phone has already been used", 400);
         }
         user.setCredit(0);
         userRepo.save(user);
@@ -41,9 +45,9 @@ public class ServiceController {
     public SignIn signIn(@RequestBody User userSignIn) {
         User user = userRepo.findByPhone(userSignIn.getPhone());
         if (user != null && user.getPassword().equals(userSignIn.getPassword())) {
-            return new SignIn("success to sign in", 200, user.getUserId());
+            return new SignIn("success to sign in", 200, new Users(user.getUserId(), user.getPhone()));
         } else {
-            return new SignIn("account or password is incorrect", 400, -1);
+            return new SignIn("account or password is incorrect", 400, null);
         }
     }
 
