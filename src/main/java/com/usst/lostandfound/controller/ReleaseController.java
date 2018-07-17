@@ -5,6 +5,7 @@ import com.usst.lostandfound.entity.Lost;
 import com.usst.lostandfound.entity.User;
 import com.usst.lostandfound.repository.*;
 import com.usst.lostandfound.response.Response;
+import com.usst.lostandfound.response.UploadPic;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -200,36 +201,26 @@ public class ReleaseController {
         switch (type) {
             case 0:
                 Lost lost = lostRepo.findByLostId(id);
-                lost.setPic(getPicUrl(pic, lost.getLostPhone()));
+                String picUrl = getPicUrl(pic, lost.getLostPhone());
+                if (picUrl == null) {
+                    return new Response("fail to upload picture", 400);
+                }
+                lost.setPic(picUrl);
                 lostRepo.save(lost);
                 break;
             case 1:
                 Found found = foundRepo.findByFoundId(id);
-                found.setPic(getPicUrl(pic, found.getFoundPhone()));
+                String picUrl2 = getPicUrl(pic, found.getFoundPhone());
+                if (picUrl2 == null) {
+                    return new Response("fail to upload picture", 400);
+                }
+                found.setPic(picUrl2);
                 foundRepo.save(found);
                 break;
         }
         return new Response("success to upload picture", 200);
-    }
 
-    /*@CrossOrigin
-    @PostMapping(value = "/upload/{id}/{type}")
-    public Response uploadPic(@RequestParam("pic") MultipartFile pic, @PathVariable("id") Integer id,
-                              @PathVariable("type") Integer type) {
-        switch (type) {
-            case 0:
-                Lost lost = lostRepo.findByLostId(id);
-                lost.setPic(getPicUrl(pic, lost.getLostPhone()));
-                lostRepo.save(lost);
-                break;
-            case 1:
-                Found found = foundRepo.findByFoundId(id);
-                found.setPic(getPicUrl(pic, found.getFoundPhone()));
-                foundRepo.save(found);
-                break;
-        }
-        return new Response("success to upload picture", 200);
-    }*/
+    }
 
     private static String getPicUrl(MultipartFile pic, String phone) {
         String url = null;

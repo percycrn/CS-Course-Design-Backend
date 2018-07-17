@@ -1,6 +1,7 @@
 package com.usst.lostandfound.controller;
 
 import com.usst.lostandfound.entity.Application;
+import com.usst.lostandfound.entity.Found;
 import com.usst.lostandfound.repository.*;
 import com.usst.lostandfound.response.Audit;
 import com.usst.lostandfound.response.Response;
@@ -12,9 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ManagerController {
     private final ApplicationRepository appRepo;
+    private final FoundRepository foundRepo;
+    private final LostRepository lostRepo;
+    private final UserRepository userRepo;
 
-    public ManagerController(ApplicationRepository appRepo) {
+    public ManagerController(ApplicationRepository appRepo, FoundRepository foundRepo, LostRepository lostRepo,
+                             UserRepository userRepo) {
         this.appRepo = appRepo;
+        this.foundRepo = foundRepo;
+        this.lostRepo = lostRepo;
+        this.userRepo = userRepo;
     }
 
     /**
@@ -31,6 +39,11 @@ public class ManagerController {
             return new Response("application does not exist", 400);
         }
         app.setState(audit.getState());
+        if (audit.getState() == 1) {
+            Found found = foundRepo.findByFoundId(app.getFoundId());
+            found.setLostPhone(app.getPhone());
+            foundRepo.save(found);
+        }
         appRepo.save(app);
         return new Response("success to audit", 200);
     }
