@@ -14,15 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class ManagerController {
     private final ApplicationRepository appRepo;
     private final FoundRepository foundRepo;
-    private final LostRepository lostRepo;
-    private final UserRepository userRepo;
 
-    public ManagerController(ApplicationRepository appRepo, FoundRepository foundRepo, LostRepository lostRepo,
-                             UserRepository userRepo) {
+    public ManagerController(ApplicationRepository appRepo, FoundRepository foundRepo) {
         this.appRepo = appRepo;
         this.foundRepo = foundRepo;
-        this.lostRepo = lostRepo;
-        this.userRepo = userRepo;
     }
 
     /**
